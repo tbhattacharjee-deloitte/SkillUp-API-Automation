@@ -37,7 +37,10 @@ public class Auth {
         obj.put("username", username);
         obj.put("password", password);
         Response response = given().spec(reqSpec).body(obj.toString())
-                .post("/generate-token").then().spec(resSpec).extract().response();
+                .post("/generate-token").then().spec(resSpec)
+                .extract().response();
+
+        assert response.statusCode() == BaseProp.OK;
 
         JSONObject res = new JSONObject(response.asString());
         return res.get("token").toString();
