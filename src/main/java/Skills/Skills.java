@@ -11,6 +11,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import static io.restassured.RestAssured.given;
 
@@ -55,5 +56,29 @@ public class Skills {
                 .delete("/api/skills/" + this.createdSkillId).then()
                 .extract().response();
         assert response.statusCode() == BaseProp.OK;
+    }
+
+    public void getAllSkills() {
+        Response response = given().spec(reqSpec).get("api/skills/").then()
+                .spec(resSpec).extract().response();
+        assert response.statusCode() == BaseProp.OK;
+        JSONArray arr = new JSONArray(response.asString());
+        logger.debug(arr);
+    }
+
+    public void getSkillByID(int id) {
+        Response response = given().spec(reqSpec).get("api/skills/" + id).then()
+                .spec(resSpec).extract().response();
+        assert response.statusCode() == BaseProp.OK;
+        JSONObject res = new JSONObject(response.asString());
+        logger.debug(res);
+    }
+
+    public void getSkillByName(String name) {
+        Response response = given().spec(reqSpec).param("skillName", name).
+                get("/api/skills/name").then().spec(resSpec).extract().response();
+        assert response.statusCode() == BaseProp.OK;
+        JSONObject res = new JSONObject(response.asString());
+        logger.debug(res);
     }
 }
