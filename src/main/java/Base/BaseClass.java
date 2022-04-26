@@ -11,9 +11,12 @@ public class BaseClass {
     public static ExtentTest test;
     public static ExtentReports extent;
 
+    static {
+        extent = new ExtentReports();
+    }
+
     public BaseClass() {
         logger = LogManager.getLogger(BaseClass.class.getName());
-        extent = new ExtentReports();
         //extent.attachReporter(new ExtentHtmlReporter("extent.html"));
     }
 
