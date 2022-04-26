@@ -71,7 +71,7 @@ public class Skills {
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
-        logger.debug(res);
+        logger.debug("Skill data with id = {" + id + "} => " + res);
     }
 
     public void getSkillByName(String name) {
@@ -80,5 +80,15 @@ public class Skills {
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
         logger.debug(res);
+    }
+
+    public void updateSkills(int id, String skillName) {
+        getSkillByID(id);
+        JSONObject obj = new JSONObject();
+        obj.put("skillName", skillName);
+        Response response = given().spec(reqSpec).body(obj.toString())
+                .put("/api/skills/update/" + id).then().spec(resSpec).extract().response();
+        assert response.statusCode() == BaseProp.OK;
+        logger.debug("Updated skill => " + response.asString());
     }
 }

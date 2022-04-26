@@ -7,6 +7,8 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.UUID;
+
 public class SkillsApiTest extends BaseClass {
     private String loginToken;
     private Skills skills;
@@ -46,5 +48,10 @@ public class SkillsApiTest extends BaseClass {
     @Test (priority = 5)
     public void getSkillByName() {
         skills.getSkillByName("Java");
+    }
+
+    @Test (priority = 6)
+    public void updateSkill() {
+        skills.updateSkills(29, UUID.randomUUID().toString());
     }
 }
