@@ -8,9 +8,16 @@ import io.restassured.path.json.JsonPath;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.logging.Logger;
+
 import static org.hamcrest.Matchers.*;
 @Listeners(DemoListener.class)
 public class RequestTest extends BaseClass {
+    static Logger log = Logger.getLogger(String.valueOf(RequestTest.class));
     private String loginToken;
 
     public RequestTest(){
@@ -22,100 +29,138 @@ public class RequestTest extends BaseClass {
     public void loginUser(){
         loginToken = Auth.login("vivek", "vivek123");
         System.out.println("Login Token is "+loginToken);
+
+        log.info("Token Is Generated");
     }
 //CREATE NEW REQUEST
-    @Test
-    public void create_new_request(){
+    @Test(priority = 1)
+    public void create_new_request() throws IOException {
+        log.info("Creating New Request");
+
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
-                given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
-                    .body("{\n" +
-                            "    \"startDate\": \"12-05-2022\",\n" +
-                            "    \"availStartTime\": \"10:12:30\",\n" +
-                            "    \"availEndTime\": \"10:12:45\",\n" +
-                            "    \"description\": \"To master this skill.\",\n" +
-                            "    \"duration\": 3\n" +
-                            "}")
+        JsonPath create_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))));
+
+        given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
+                    .body(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))))
+
                 .when().post("/api/requests/22/7")
+
                 .then().log().all().assertThat().statusCode(200).contentType("application/json")
-                        .body("availStartTime",equalTo("10:12:30")).body("availEndTime",equalTo("10:12:45"))
-                        .body("description",equalTo("To master this skill."));
+                        .body("availStartTime",equalTo(create_data.getString("availStartTime"))).body("availEndTime",equalTo(create_data.getString("availEndTime")))
+                        .body("description",equalTo(create_data.getString("description")));
+
 
     }
 
     //GET ALL REQUEST
-    @Test
+    @Test(priority = 2)
     public void get_all_request(){
+        log.info("Getting all requests");
+
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
         given().log().all().header("Authorization", "Bearer " + loginToken)
                 .when().get("/api/requests/")
                 .then().log().all().assertThat().statusCode(200);
+
     }
 
     //GET REQUEST BY ID
-    @Test
+    @Test(priority = 3)
     public void get_request_by_id(){
+        log.info("getting request by id");
+
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+        int id=87;
+
         given().log().all().header("Authorization", "Bearer " + loginToken)
-                .when().get("/api/requests/87")
-                .then().log().all().assertThat().statusCode(200).body("requestId",equalTo(87));
+                .when().get("/api/requests/"+id)
+                .then().log().all().assertThat().statusCode(200).body("requestId",equalTo(id));
+
     }
     //GET USER OF THIS REQUEST
-    @Test
+    @Test(priority = 4)
     public void get_userrequest(){
+        log.info("Getting user of this request");
+        int req_id=87;
+
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
         String responsebody=given().log().all().header("Authorization", "Bearer " + loginToken)
-                .when().get("/api/requests/getUser/87")
+                .when().get("/api/requests/getUser/"+req_id)
+
                 .then().log().all().assertThat().statusCode(200).extract().response().asString();
+
         JsonPath js=new JsonPath(responsebody);
         int count_total_request= js.getInt("requests.size()");
+
         System.out.println("total requests are "+count_total_request);
+
     }
+
     //UPDATE REQUEST DETAILS
-    @Test
-    public void update_request(){
+    @Test(priority = 5)
+    public void update_request() throws IOException {
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+        int update_requestID=87;
+
+        JsonPath update_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/Updatedata.json"))));
+
         String updateresponse=given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
-                .body("{\n" +
-                        "    \"startDate\": \"24-07-2030\",\n" +
-                        "    \"availStartTime\": \"10:08:28\",\n" +
-                        "    \"availEndTime\": \"10:09:43\",\n" +
-                        "    \"duration\": 3\n" +
-                        "}").
-                when().put("/api/requests/update/87")
+                .body(new String(Files.readAllBytes(Paths.get("src/test/resources/Updatedata.json")))).
+
+                when().put("/api/requests/update/"+update_requestID)
+
                 .then().log().all().assertThat().statusCode(200).contentType("application/json")
-                .body("duration",equalTo(3)).body("availStartTime",equalTo("10:08:28"))
-                .body("availEndTime",equalTo("10:09:43")).extract().response().asString();
+
+                .body("duration",equalTo(update_data.getInt("duration")))
+                .body("availStartTime",equalTo(update_data.getString("availStartTime")))
+                .body("availEndTime",equalTo(update_data.getString("availEndTime"))).extract().response().asString();
+
+        //fetching data from response
         JsonPath js=new JsonPath(updateresponse);
         int duration_value= js.getInt("duration");
+        int reqID=js.getInt("requestId");
 
         //Verifying update call by get call
         given().log().all().header("Authorization", "Bearer " + loginToken)
-                .when().get("/api/requests/87")
-                .then().log().all().assertThat().statusCode(200).body("requestId",equalTo(87))
+                .when().get("/api/requests/"+reqID)
+                .then().log().all().assertThat().statusCode(200).body("requestId",equalTo(reqID))
                 .body("duration",equalTo(duration_value));
 
+        log.info("Updated request Details");
     }
+
     //DELETE REQUEST BY ID
-    @Test
-    public void delete_requestby_id(){
+    @Test(priority = 6)
+    public void delete_requestby_id() throws IOException {
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
         String postbody=given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
-                .body("{\n" +
-                        "    \"startDate\": \"12-05-2022\",\n" +
-                        "    \"availStartTime\": \"10:12:30\",\n" +
-                        "    \"availEndTime\": \"10:12:45\",\n" +
-                        "    \"description\": \"To master this skill.\",\n" +
-                        "    \"duration\": 3\n" +
-                        "}")
+                .body(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))))
+
                 .when().post("/api/requests/22/7")
+
                 .then().log().all().assertThat().statusCode(200).contentType("application/json").extract().response().asString();
 
-        JsonPath js=new JsonPath(postbody);
-        int requestID= js.getInt("requestId");
+        JsonPath postdata=new JsonPath(postbody);
+        int requestID= postdata.getInt("requestId");
+
         given().log().all().header("Authorization", "Bearer " + loginToken)
                 .when().delete("/api/requests/"+requestID).then().log().all().assertThat().statusCode(200);
-    }
 
+        log.info("Deleted Request by id");
+
+        //Verifying by get method
+        //getting deleted request by id
+        //status = 404 not found because its deleted
+
+        given().log().all().header("Authorization", "Bearer " + loginToken)
+                .when().get("/api/requests/"+requestID)
+                .then().log().all().assertThat().statusCode(404);
+
+        log.info("Request ID Was Deleted Successfully");
+    }
     }
 
 
