@@ -49,7 +49,8 @@ public class RequestTest extends BaseClass {
                         .body("availStartTime",equalTo(create_data.getString("availStartTime"))).body("availEndTime",equalTo(create_data.getString("availEndTime")))
                         .body("description",equalTo(create_data.getString("description")));
 
-
+        System.out.println("Start Time is "+create_data.getString("availStartTime")+" End Time is "+create_data.getString("availEndTime"));
+        System.out.println("Description is =>"+create_data.getString("description"));
     }
 
     //GET ALL REQUEST
@@ -61,7 +62,7 @@ public class RequestTest extends BaseClass {
 
         given().log().all().header("Authorization", "Bearer " + loginToken)
                 .when().get("/api/requests/")
-                .then().log().all().assertThat().statusCode(200);
+                .then().log().all().assertThat().statusCode(200).contentType("application/json");
 
     }
 
