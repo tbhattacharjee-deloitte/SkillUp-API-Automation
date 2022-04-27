@@ -1,8 +1,11 @@
 import Auth.Auth;
+import Base.BaseProp;
 import io.restassured.http.Header;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
+import org.json.JSONObject;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -15,7 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class MessageTest {
     RequestSpecification requestSpecification;
     private String LoginToken;
-    String BaseURI = "https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app/api/messages";
+    String BaseUri = BaseProp.baseUrl+"/api/messages";
     @BeforeTest
     public void login(){
         LoginToken = Auth.login("vivek", "vivek123");
@@ -24,33 +27,97 @@ public class MessageTest {
     @Test
     public void GetAllMessages(){
         requestSpecification = with().
-                baseUri(BaseURI).
+                baseUri(BaseUri).
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
         Response response = requestSpecification.get("/");
         ResponseBody responseBody = response.getBody();
         List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
-        assertThat(response.statusCode(), equalTo(200));
+        assertThat(response.statusCode(), equalTo(BaseProp.OK));
         assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
     }
     @Test(priority = 1)
     public void GetMessageByID(){
         requestSpecification = with().
-                baseUri(BaseURI).
+                baseUri(BaseUri).
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
-        Response response = requestSpecification.get("/26");
+        String MessageID = "26";
+        Response response = requestSpecification.get("/"+MessageID);
         ResponseBody responseBody = response.getBody();
+        JsonPath jsonPath = new JsonPath(responseBody.asString());
+        int messageId = jsonPath.getInt("messageId");
         List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
-        assertThat(response.statusCode(), equalTo(200));
+        assertThat(response.statusCode(), equalTo(BaseProp.OK));
         assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
+        assertThat(messageId, equalTo(Integer.parseInt(MessageID)));
     }
     @Test(priority = 3)
     public void CreateMessageByRefID(){
+        JSONObject parameter = new JSONObject();
+        parameter.put("message", "https://nextjs.org/docs/getting-started");
+        parameter.put("context", "Next.js documentation");
+        parameter.put("timeStamp", "10:00:00");
+        requestSpecification = with().
+                baseUri(BaseUri).
+                body(parameter.toString()).
+                header("Content-Type", "application/json").
+                header("Authorization", "Bearer " + LoginToken);
+        Response response = requestSpecification.put("/26");
+        ResponseBody responseBody = response.getBody();
+        List<Header> ContentType = response.getHeaders().getList("Content-Type");
+        assertThat(response.statusCode(), equalTo(BaseProp.OK));
+        assertThat(ContentType.get(0).getValue(), equalTo("application/json"));
 
     }
     @Test(priority = 4)
     public void DeleteMessageByID(){
+        requestSpecification = with().
+                baseUri(BaseUri).
+                header("Content-Type", "application/json").
+                header("Authorization", "Bearer " + LoginToken);
+        Response response = requestSpecification.delete("/30");
+        List<Header> ContentType= response.getHeaders().getList("Content-Type");
+        List<Header> ContentLength = response.getHeaders().getList("Content-Length");
+        assertThat(ContentType.get(0).getValue(), equalTo("text/html"));
+        assertThat(ContentLength.get(0).getValue(), equalTo(0));
+        assertThat(response.statusCode(), equalTo(200));
+    }
 
+    // negative test cases
+    // invalid Login token
+    @Test(priority = 5)
+    public void GetAllMessagesNegativeTest(){
+        requestSpecification = with().
+                baseUri(BaseUri).
+                header("Content-Type", "application/json").
+                header("Authorization", "Bearer " + LoginToken+"k");
+        Response response = requestSpecification.get("/");
+        ResponseBody responseBody = response.getBody();
+        JsonPath jsonPath = new JsonPath(responseBody.asString());
+        String Error = jsonPath.getString("error");
+        String Message = jsonPath.getString("message");
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        assertThat(response.statusCode(), equalTo(BaseProp.UNAUTH));
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
+        assertThat(Error, equalTo("Unauthorized"));
+        assertThat(Message, equalTo("Unauthorized : Server"));
+    }
+
+    // deleting non-existent message
+    @Test(priority = 6)
+    public void DeleteMessageByIDNegativeTest(){
+        requestSpecification = with().
+                baseUri(BaseUri).
+                header("Content-Type", "application/json").
+                header("Authorization", "Bearer " + LoginToken);
+
+        Response response = requestSpecification.delete("/30");
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        ResponseBody responseBody = response.getBody();
+        JsonPath jsonPath = new JsonPath(responseBody.asString());
+        assertThat(response.statusCode(), equalTo(404));
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
+        assertThat(jsonPath.getInt("status"), equalTo(404));
     }
 }
