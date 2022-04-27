@@ -12,12 +12,12 @@ import java.util.UUID;
 
 public class UsersAPITest extends BaseClass{
     private String loginToken;
-//    private Users users;
+    private Users users;
 
     @BeforeClass
     public void login() {
         loginToken = Auth.login("vivek", "vivek123");
-//        users = new Users(loginToken, logger);
+        users = new Users(loginToken, logger);
 //        logger.debug(loginToken);
     }
 

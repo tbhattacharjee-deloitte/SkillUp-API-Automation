@@ -15,9 +15,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
 
@@ -28,6 +30,17 @@ public class Users {
     private static RequestSpecification reqSpec;
     private static ResponseSpecification resSpec;
     private static int addeduserId;
+
+    public static Properties prop;
+    static {
+        try{
+            prop = new Properties();
+            FileInputStream ip=new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\java\\Users\\userdata.json");
+            prop.load(ip);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public Users(String token, Logger logger) {
@@ -48,17 +61,33 @@ public class Users {
     }
 
     public static void createUser(){
-        JSONObject obj = new JSONObject();
+//
+//        String str = "{\n" +
+//                "  \"name\": \"Vivek Kumar Singh\",\n" +
+//                "  \"username\":\"vivek1913\",\n" +
+//                "  \"password\":\"abc\",\n" +
+//                "  \"designation\":\"Employee\",\n" +
+//                "  \"age\": 25,\n" +
+//                "  \"enabled\": true,\n" +
+//                "  \"bio\": \"Loves Football\",\n" +
+//                "  \"emailId\": \"vks@ps.com\",\n" +
+//                "  \"workingExperience\": 1\n" +
+//                "}";
+//        JSONObject obj = new JSONObject(str);
+//
+//        System.out.println(obj);
 
         File jsonData = new File("src\\main\\java\\Users\\userdata.json");
+
         Response response = given().spec(reqSpec).body(jsonData)
                 .post("/api/users/?roleName=EMPLOYEE").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
 
-        System.out.println(res);
+        System.out.println(response.statusCode());
 
         addeduserId = Integer.parseInt(res.get("id").toString());
+        System.out.println(addeduserId);
 
     }
 
@@ -102,9 +131,11 @@ public class Users {
 
     public static void delete_user(){
         Response response = given().spec(reqSpec)
-                .delete("/api/skills/" + addeduserId).then()
+                .delete("/api/users/" + addeduserId).then()
                 .extract().response();
+        System.out.println(response.asString()+" "+addeduserId +" "+ response.statusCode());
         assert response.statusCode() == BaseProp.OK;
+
     }
 
     public static void get_all_trainings_as_trainee(int id){
