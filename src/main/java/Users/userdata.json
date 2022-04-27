@@ -1,0 +1,11 @@
+{
+  "name": "Vivek Kumar Singh",
+  "username":"vivek1913",
+  "password":"abc",
+  "designation":"Employee",
+  "age": 25,
+  "enabled": true,
+  "bio": "Loves Football",
+  "emailId": "vks@ps.com",
+  "workingExperience": 1
+}

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +27,7 @@ public class Users {
     private Logger logger;
     private static RequestSpecification reqSpec;
     private static ResponseSpecification resSpec;
+    private static int addeduserId;
 
 
     public Users(String token, Logger logger) {
@@ -45,15 +47,18 @@ public class Users {
         resSpec = resBuilder.build();
     }
 
-    public void createUser(){
+    public static void createUser(){
         JSONObject obj = new JSONObject();
 
-        Response response = given().spec(reqSpec).body(obj.toString())
+        File jsonData = new File("src\\main\\java\\Users\\userdata.json");
+        Response response = given().spec(reqSpec).body(jsonData)
                 .post("/api/users/?roleName=EMPLOYEE").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
 
         System.out.println(res);
+
+        addeduserId = Integer.parseInt(res.get("id").toString());
 
     }
 
@@ -75,8 +80,31 @@ public class Users {
         System.out.println(res);
     }
 
-    public void update_user(){
+    public static void update_user(int id, int age){
+        get_user_by_ID(id);
+        JSONObject obj = new JSONObject();
+        obj.put("age", age);
+        Response response = given().spec(reqSpec).body(obj.toString())
+                .put("/api/users/update/" + id).then().spec(resSpec).extract().response();
+        assert response.statusCode() == BaseProp.OK;
 
+    }
+
+//    public static void add_skill_to_user(int id, String skillName){
+//        get_user_by_ID(id);
+//        JSONObject obj = new JSONObject();
+//        obj.put("skillName", skillName);
+//        Response response = given().spec(reqSpec).body(obj.toString())
+//                .put("/api/users/addSkill/" + id).then().spec(resSpec).extract().response();
+//        assert response.statusCode() == BaseProp.OK;
+//
+//    }
+
+    public static void delete_user(){
+        Response response = given().spec(reqSpec)
+                .delete("/api/skills/" + addeduserId).then()
+                .extract().response();
+        assert response.statusCode() == BaseProp.OK;
     }
 
     public static void get_all_trainings_as_trainee(int id){
@@ -97,3 +125,31 @@ public class Users {
         System.out.println(jsonArray);
     }
 }
+//
+//    public void createSkill(String skillName) {
+//        JSONObject obj = new JSONObject();
+//        obj.put("skillName", skillName);
+//        Response response = given().spec(reqSpec).body(obj.toString())
+//                .post("/api/skills/").then().spec(resSpec).extract().response();
+//        assert response.statusCode() == BaseProp.OK;
+//        JSONObject res = new JSONObject(response.asString());
+//        logger.debug(res.toString());
+//        this.createdSkillId = Integer.parseInt(res.get("skillId").toString());
+//    }
+//
+//    public void deleteLastCreatedSkill() {
+//        Response response = given().spec(reqSpec)
+//                .delete("/api/skills/" + this.createdSkillId).then()
+//                .extract().response();
+//        assert response.statusCode() == BaseProp.OK;
+//    }
+//
+//    public void updateSkills(int id, String skillName) {
+//        getSkillByID(id);
+//        JSONObject obj = new JSONObject();
+//        obj.put("skillName", skillName);
+//        Response response = given().spec(reqSpec).body(obj.toString())
+//                .put("/api/skills/update/" + id).then().spec(resSpec).extract().response();
+//        assert response.statusCode() == BaseProp.OK;
+//        logger.debug("Updated skill => " + response.asString());
+//    }
