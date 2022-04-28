@@ -33,12 +33,12 @@ public class UsersAPITest extends BaseClass{
 
     @Test(priority = 3)
     public void get_user_by_id(){
-        Users.get_user_by_ID(1);
+        Users.get_user_by_ID(Users.addeduserId);
     }
 
     @Test(priority = 4)
     public void update_user(){
-        Users.update_user(1,40);
+        Users.update_user(128,"age","35");
     }
 
     @Test(priority = 5)

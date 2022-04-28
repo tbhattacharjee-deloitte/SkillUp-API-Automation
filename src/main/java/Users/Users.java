@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import static io.restassured.RestAssured.defaultParser;
 import static io.restassured.RestAssured.given;
 
 public class Users {
@@ -29,7 +30,7 @@ public class Users {
     private Logger logger;
     private static RequestSpecification reqSpec;
     private static ResponseSpecification resSpec;
-    private static int addeduserId;
+    public static int addeduserId;
 
     public static Properties prop;
     static {
@@ -61,33 +62,16 @@ public class Users {
     }
 
     public static void createUser(){
-//
-//        String str = "{\n" +
-//                "  \"name\": \"Vivek Kumar Singh\",\n" +
-//                "  \"username\":\"vivek1913\",\n" +
-//                "  \"password\":\"abc\",\n" +
-//                "  \"designation\":\"Employee\",\n" +
-//                "  \"age\": 25,\n" +
-//                "  \"enabled\": true,\n" +
-//                "  \"bio\": \"Loves Football\",\n" +
-//                "  \"emailId\": \"vks@ps.com\",\n" +
-//                "  \"workingExperience\": 1\n" +
-//                "}";
-//        JSONObject obj = new JSONObject(str);
-//
-//        System.out.println(obj);
-
         File jsonData = new File("src\\main\\java\\Users\\userdata.json");
 
         Response response = given().spec(reqSpec).body(jsonData)
                 .post("/api/users/?roleName=EMPLOYEE").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        assert (res.get("name").toString()).equals("Vivek Kumar Singh");
 
-        System.out.println(response.statusCode());
-
+        System.out.println("User with name "+res.get("name")+" created");
         addeduserId = Integer.parseInt(res.get("id").toString());
-        System.out.println(addeduserId);
 
     }
 
@@ -95,10 +79,10 @@ public class Users {
         Response response = given().spec(reqSpec).
                 get("/api/users/").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
-
         JSONArray jsonArray = new JSONArray(response.asString());
+        assert jsonArray.length() > 0;
 
-        System.out.println(jsonArray.length());
+        System.out.println("Number of users : "+ jsonArray.length());
     }
 
     public static void get_user_by_ID(int id){
@@ -106,16 +90,23 @@ public class Users {
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
-        System.out.println(res);
+        assert res.get("id").equals(id);
+
+        System.out.println("Name of user with id : "+res.get("id")+ " is "+res.get("name"));
     }
 
-    public static void update_user(int id, int age){
+    public static void update_user(int id,String field,String value){
         get_user_by_ID(id);
         JSONObject obj = new JSONObject();
-        obj.put("age", age);
+        obj.put(field, value);
         Response response = given().spec(reqSpec).body(obj.toString())
                 .put("/api/users/update/" + id).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        JSONObject res = new JSONObject(response.asString());
+        System.out.println(response.statusCode());
+        assert ((res.get(field)).toString()).equals(obj.get(field).toString());
+
+        System.out.println(field + " of User with id updated to "+res.get(field));
 
     }
 
@@ -156,31 +147,3 @@ public class Users {
         System.out.println(jsonArray);
     }
 }
-//
-//    public void createSkill(String skillName) {
-//        JSONObject obj = new JSONObject();
-//        obj.put("skillName", skillName);
-//        Response response = given().spec(reqSpec).body(obj.toString())
-//                .post("/api/skills/").then().spec(resSpec).extract().response();
-//        assert response.statusCode() == BaseProp.OK;
-//        JSONObject res = new JSONObject(response.asString());
-//        logger.debug(res.toString());
-//        this.createdSkillId = Integer.parseInt(res.get("skillId").toString());
-//    }
-//
-//    public void deleteLastCreatedSkill() {
-//        Response response = given().spec(reqSpec)
-//                .delete("/api/skills/" + this.createdSkillId).then()
-//                .extract().response();
-//        assert response.statusCode() == BaseProp.OK;
-//    }
-//
-//    public void updateSkills(int id, String skillName) {
-//        getSkillByID(id);
-//        JSONObject obj = new JSONObject();
-//        obj.put("skillName", skillName);
-//        Response response = given().spec(reqSpec).body(obj.toString())
-//                .put("/api/skills/update/" + id).then().spec(resSpec).extract().response();
-//        assert response.statusCode() == BaseProp.OK;
-//        logger.debug("Updated skill => " + response.asString());
-//    }
