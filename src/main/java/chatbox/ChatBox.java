@@ -71,7 +71,6 @@ public class ChatBox {
         assert response.statusCode() == BaseProp.OK;
         List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
         assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
-
         System.out.println("chat added to chatbox is " + response.asString());
     }
 
