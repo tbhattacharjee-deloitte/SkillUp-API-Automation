@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="All Test Suite">
-    <listeners>
-        <listener class-name="DemoListener"/>
-    </listeners>
-    <test verbose="2" preserve-order="true" name="CrossSkill_API_Testing">
+    <parameter name="username" value="vivek"/>
+    <parameter name="password" value="vivek123"/>
+    <test name="Skill">
+        <parameter name="createNewSkill" value="AI"/>
+        <parameter name="skillID" value="5"/>
+        <parameter name="existingSkillName" value="Java"/>
+        <parameter name="updSkillId" value="20"/>
         <classes>
-            <class name="DemoTest"/>
+            <class name="TestClassPackage.SkillsApiTest"/>
+        </classes>
+    </test>
+    <test name="CategoriesTest">
+        <classes>
+            <class name="CategoriesTest"/>
+        </classes>
+    </test>
+    <test name="ChatBox">
+        <parameter name="id" value="24"/>
+        <classes>
+            <class name="ChatBoxTest"/>
+        </classes>
+    </test>
+    <test name="Message Test">
+        <classes>
+            <class name="MessageTest"/>
+        </classes>
+    </test>
+    <test name="Reference Test">
+        <classes>
+            <class name="ReferenceTest"/>
+        </classes>
+    </test>
+    <test name="Request Test">
+        <classes>
+            <class name="RequestTest"/>
+        </classes>
+    </test>
+    <test name="Training Details Test">
+        <classes>
+            <class name="TrainingDetailsTest"/>
+        </classes>
+    </test>
+    <test name="UsersApiTest">
+        <classes>
+            <class name="UsersAPITest"/>
         </classes>
     </test>
 </suite>

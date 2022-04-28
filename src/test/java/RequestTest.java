@@ -7,6 +7,7 @@ import static io.restassured.RestAssured.*;
 import io.restassured.path.json.JsonPath;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -26,8 +27,9 @@ public class RequestTest extends BaseClass {
     }
 
     @BeforeClass
-    public void loginUser(){
-        loginToken = Auth.login("vivek", "vivek123");
+    @Parameters({"username", "password"})
+    public void loginUser(String username, String password){
+        loginToken = Auth.login(username, password);
         System.out.println("Login Token is "+loginToken);
 
         log.info("Token Is Generated");

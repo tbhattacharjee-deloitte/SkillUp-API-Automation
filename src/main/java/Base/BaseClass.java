@@ -17,6 +17,7 @@ public class BaseClass {
 
     static {
         extent = new ExtentReports();
+        extent.attachReporter(new ExtentHtmlReporter("extent.html"));
     }
 
     public BaseClass() {

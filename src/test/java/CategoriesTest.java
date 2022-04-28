@@ -1,10 +1,14 @@
 import Auth.Auth;
+import ListenersPackage.ListenerClass;
 import categories.Category;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import Base.BaseClass;
 
+@Listeners(ListenerClass.class)
 public class CategoriesTest extends BaseClass{
 
     private String loginToken;
@@ -16,9 +20,10 @@ public class CategoriesTest extends BaseClass{
     }
 
     @BeforeClass
-    public void login() {
-        String username = prop.getProperty("username");
-        String password = prop.getProperty("password");
+    @Parameters({"username", "password"})
+    public void login(String username, String password) {
+//        String username = prop.getProperty("username");
+//        String password = prop.getProperty("password");
         loginToken = Auth.login(username, password);
         category = new Category(loginToken);
         System.out.println("Login token is: " + loginToken);

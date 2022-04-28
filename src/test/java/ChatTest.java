@@ -1,9 +1,11 @@
 import Auth.Auth;
 import Base.BaseClass;
+import ListenersPackage.ListenerClass;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.util.logging.Logger;
 import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
 
+@Listeners(ListenerClass.class)
 public class ChatTest extends BaseClass {
     static Logger log = Logger.getLogger(String.valueOf(RequestTest.class));
     private String loginToken;

@@ -1,5 +1,6 @@
 import Auth.Auth;
 import Base.BaseProp;
+import ListenersPackage.ListenerClass;
 import io.restassured.http.Header;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -7,6 +8,8 @@ import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -16,13 +19,15 @@ import static io.restassured.RestAssured.with;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+@Listeners(ListenerClass.class)
 public class MessageTest {
     RequestSpecification requestSpecification;
     private String LoginToken;
     String BaseUri = BaseProp.baseUrl+"/api/messages";
     @BeforeTest
-    public void login(){
-        LoginToken = Auth.login("vivek", "vivek123");
+    @Parameters({"username", "password"})
+    public void login(String username, String password){
+        LoginToken = Auth.login(username, password);
 //        System.out.println(LoginToken);
     }
     @Test

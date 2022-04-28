@@ -1,5 +1,6 @@
 import Auth.Auth;
 import Base.BaseProp;
+import ListenersPackage.ListenerClass;
 import chatbox.ChatBox;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import io.restassured.RestAssured;
@@ -10,8 +11,11 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+@Listeners(ListenerClass.class)
 public class ChatBoxTest {
     private String loginToken;
     private ChatBox chatBox;
@@ -22,8 +26,9 @@ public class ChatBoxTest {
     }
 
     @BeforeClass
-    public void login() {
-        loginToken = Auth.login("vivek", "vivek123");
+    @Parameters({"username", "password"})
+    public void login(String username, String password) {
+        loginToken = Auth.login(username, password);
         chatBox = new ChatBox(loginToken);
         System.out.println("Login token is:" + loginToken);
     }
@@ -40,8 +45,9 @@ public class ChatBoxTest {
 
 
     @Test(priority = 3)
-    public void addChatToChatbox() {
-        chatBox.addChatToChatbox(24);
+    @Parameters ({"id"})
+    public void addChatToChatbox(String id) {
+        chatBox.addChatToChatbox(Integer.parseInt(id));
     }
 
     @Test (priority = 4)

@@ -2,35 +2,37 @@ package TestClassPackage;
 
 import Auth.Auth;
 import Base.BaseClass;
-import ListenersPackage.SkillsListners;
+import ListenersPackage.ListenerClass;
 import Skills.Skills;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.util.UUID;
 
-@Listeners(SkillsListners.class)
+@Listeners(ListenerClass.class)
 public class SkillsApiTest extends BaseClass {
     private String loginToken;
     private Skills skills;
 
     public SkillsApiTest() {
         super();
-        extent.attachReporter(new ExtentHtmlReporter("SkillsApiTest.html"));
     }
 
     @BeforeClass
-    public void login() {
-        loginToken = Auth.login("vivek", "vivek123");
+    @Parameters ({"username", "password"})
+    public void login(String username, String password) {
+        loginToken = Auth.login(username, password);
         skills = new Skills(loginToken, logger);
         logger.debug(loginToken);
     }
 
     @Test (priority = 1)
-    public void createSkill() {
-        skills.createSkill("AI");
+    @Parameters ({"createNewSkill"})
+    public void createSkill(String createNewSkill) {
+        skills.createSkill(createNewSkill);
     }
 
     @Test (priority = 2)
@@ -44,17 +46,20 @@ public class SkillsApiTest extends BaseClass {
     }
 
     @Test (priority = 4)
-    public void getSkillById() {
-        skills.getSkillByID(5);
+    @Parameters({"skillID"})
+    public void getSkillById(String skillID) {
+        skills.getSkillByID(Integer.parseInt(skillID));
     }
 
     @Test (priority = 5)
-    public void getSkillByName() {
-        skills.getSkillByName("Java");
+    @Parameters ({"existingSkillName"})
+    public void getSkillByName(String existingSkillName) {
+        skills.getSkillByName(existingSkillName);
     }
 
     @Test (priority = 6)
-    public void updateSkill() {
-        skills.updateSkills(28, UUID.randomUUID().toString());
+    @Parameters ({"updSkillId"})
+    public void updateSkill(String updSkillId) {
+        skills.updateSkills(Integer.parseInt(updSkillId), UUID.randomUUID().toString());
     }
 }

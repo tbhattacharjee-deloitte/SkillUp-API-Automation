@@ -9,6 +9,7 @@ import io.restassured.specification.RequestSpecification;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -23,8 +24,9 @@ public class ReferenceTest {
     private String LoginToken;
     String BaseURI = BaseProp.baseUrl +"/api/references";
     @BeforeTest
-    public void login(){
-        LoginToken = Auth.login("vivek", "vivek123");
+    @Parameters ({"username", "password"})
+    public void login(String username, String password){
+        LoginToken = Auth.login(username, password);
 //        System.out.println(LoginToken);
     }
 

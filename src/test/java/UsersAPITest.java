@@ -5,6 +5,8 @@ import Base.BaseClass;
 import Users.Users;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.io.FileInputStream;
@@ -12,13 +14,15 @@ import java.lang.ref.PhantomReference;
 import java.util.Properties;
 import java.util.UUID;
 
+@Listeners(DemoListener.class)
 public class UsersAPITest extends BaseClass{
     private String loginToken;
     private Users users;
 
     @BeforeClass
-    public void login() {
-        loginToken = Auth.login("vivek", "vivek123");
+    @Parameters ({"username", "password"})
+    public void login(String username, String password) {
+        loginToken = Auth.login(username, password);
         users = new Users(loginToken, logger);
 //        logger.debug(loginToken);
     }

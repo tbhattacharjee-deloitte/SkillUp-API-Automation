@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -14,14 +16,16 @@ import static io.restassured.RestAssured.with;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+@Listeners(DemoListener.class)
 public class TrainingDetailsTest {
     RequestSpecification requestSpecification;
     private String LoginToken;
     String BaseUri = BaseProp.baseUrl+"/api/trainings";
     String Status;
     @BeforeTest
-    public void login(){
-        LoginToken = Auth.login("vivek", "vivek123");
+    @Parameters({"username", "password"})
+    public void login(String username, String password){
+        LoginToken = Auth.login(username, password);
 //        System.out.println(LoginToken);
     }
     @Test
