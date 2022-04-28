@@ -6,6 +6,9 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 public class BaseClass {
     public Logger logger;
     public static ExtentTest test;
