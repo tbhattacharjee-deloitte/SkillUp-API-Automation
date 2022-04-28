@@ -1,4 +1,5 @@
 import Auth.Auth;
+import Base.BaseClass;
 import Base.BaseProp;
 import ListenersPackage.ListenerClass;
 import chatbox.ChatBox;
@@ -16,7 +17,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 @Listeners(ListenerClass.class)
-public class ChatBoxTest {
+public class ChatBoxTest extends BaseClass {
     private String loginToken;
     private ChatBox chatBox;
 
@@ -29,8 +30,8 @@ public class ChatBoxTest {
     @Parameters({"username", "password"})
     public void login(String username, String password) {
         loginToken = Auth.login(username, password);
-        chatBox = new ChatBox(loginToken);
-        System.out.println("Login token is:" + loginToken);
+        chatBox = new ChatBox(loginToken,logger);
+        logger.debug("Login token is:" + loginToken);
     }
 
     @Test(priority = 1)

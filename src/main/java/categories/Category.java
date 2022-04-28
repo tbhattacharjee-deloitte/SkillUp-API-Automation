@@ -10,6 +10,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,6 +23,7 @@ import static io.restassured.RestAssured.given;
 
 public class Category {
     private final String token;
+    private final Logger logger;
     private final ResponseSpecification resSpec;
     private final RequestSpecification reqSpec;
     public int createdCategoryId;
@@ -29,8 +31,9 @@ public class Category {
 
 
     //constructor for category class
-    public Category(String token) {
+    public Category(String token, Logger logger) {
         this.token = token;
+        this.logger = logger;
 
         // building reqSpec
         RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
@@ -58,7 +61,7 @@ public class Category {
 
         JSONObject res = new JSONObject(response.asString());
 
-        System.out.println("CATEGORY CREATED IS:" + res);
+        logger.debug(res);
         this.createdCategoryId = Integer.parseInt(res.get("categoryId").toString());
     }
 
@@ -82,7 +85,7 @@ public class Category {
         int categoryId = jsonPath.getInt("categoryId");
         assertThat(categoryId,equalTo(id));
         JSONObject res = new JSONObject(response.asString());
-        System.out.println("SKILL DATA WITH ID = {" + id + "} => " + res);
+        logger.debug("SKILL DATA WITH ID = {" + id + "} => " + res);
     }
 
     //getting category by name
@@ -94,7 +97,7 @@ public class Category {
         String categoryName1 = jsonPath.get("categoryName");
         assertThat(categoryName1,equalTo(name));
         JSONObject res = new JSONObject(response.asString());
-        System.out.println("CATEGORY BY NAME IS:" + res);
+        logger.debug(res);
     }
 
     //updating a category
@@ -108,7 +111,7 @@ public class Category {
         JsonPath jsonPath = new JsonPath(response.asString());
         String categoryNameUpdated = jsonPath.get("categoryName");
         assertThat(categoryNameUpdated,equalTo(categoryName));
-        System.out.println("UPDATED SKILL IS: " + response.asString());
+        logger.debug(response.asString());
     }
 
     //creating a new skill
@@ -121,7 +124,7 @@ public class Category {
         List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
         assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
         JSONObject res = new JSONObject(response.asString());
-        System.out.println("CREATED SKILL IS:" + res);
+        logger.debug(res);
         this.createdSkillId = Integer.parseInt(res.get("skillId").toString());
     }
 
@@ -131,7 +134,7 @@ public class Category {
         Response response = given().spec(reqSpec)
                 .put("/api/categories/addSkill/"+id+"/"+createdSkillId).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
-        System.out.println("SKILL ADDED IS: " + response.asString());
+        logger.debug(response.asString());
     }
 
     //deleting a category by its id
@@ -145,7 +148,7 @@ public class Category {
 
         //List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
         //assertThat(AllHeaders.get(0).getValue(), equalTo("text/html"));
-        System.out.println("CATEGORY SUCCESSFULLY DELETED");
+        logger.debug("CATEGORY SUCCESSFULLY DELETED");
     }
 
 
