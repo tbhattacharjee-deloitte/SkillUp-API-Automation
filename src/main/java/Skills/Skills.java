@@ -47,6 +47,7 @@ public class Skills {
                 .post("/api/skills/").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        assert res.has("skillId") && res.has("skillName");
         logger.debug(res.toString());
         this.createdSkillId = Integer.parseInt(res.get("skillId").toString());
     }
@@ -63,6 +64,10 @@ public class Skills {
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONArray arr = new JSONArray(response.asString());
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            assert obj.has("skillId") && obj.has("skillName");
+        }
         logger.debug(arr);
     }
 
@@ -71,6 +76,7 @@ public class Skills {
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        assert res.has("skillId") && res.has("skillName");
         logger.debug("Skill data with id = {" + id + "} => " + res);
     }
 
@@ -79,6 +85,7 @@ public class Skills {
                 get("/api/skills/name").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        assert res.has("skillId") && res.has("skillName");
         logger.debug(res);
     }
 
@@ -89,6 +96,8 @@ public class Skills {
         Response response = given().spec(reqSpec).body(obj.toString())
                 .put("/api/skills/update/" + id).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
-        logger.debug("Updated skill => " + response.asString());
+        JSONObject res = new JSONObject(response.asString());
+        assert res.has("skillId") && res.has("skillName");
+        logger.debug("Updated skill => " + res);
     }
 }

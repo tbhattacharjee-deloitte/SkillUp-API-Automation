@@ -2,13 +2,16 @@ package TestClassPackage;
 
 import Auth.Auth;
 import Base.BaseClass;
+import ListenersPackage.SkillsListners;
 import Skills.Skills;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.util.UUID;
 
+@Listeners(SkillsListners.class)
 public class SkillsApiTest extends BaseClass {
     private String loginToken;
     private Skills skills;
@@ -52,6 +55,6 @@ public class SkillsApiTest extends BaseClass {
 
     @Test (priority = 6)
     public void updateSkill() {
-        skills.updateSkills(29, UUID.randomUUID().toString());
+        skills.updateSkills(28, UUID.randomUUID().toString());
     }
 }
