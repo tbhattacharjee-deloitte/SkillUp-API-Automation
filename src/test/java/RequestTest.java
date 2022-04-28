@@ -31,13 +31,14 @@ public class RequestTest extends BaseClass {
         System.out.println("Login Token is "+loginToken);
 
         log.info("Token Is Generated");
+        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
     }
 //CREATE NEW REQUEST
     @Test(priority = 1)
     public void create_new_request() throws IOException {
         log.info("Creating New Request");
 
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
         JsonPath create_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))));
 
         given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
@@ -58,7 +59,6 @@ public class RequestTest extends BaseClass {
     public void get_all_request(){
         log.info("Getting all requests");
 
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
         given().log().all().header("Authorization", "Bearer " + loginToken)
                 .when().get("/api/requests/")
@@ -71,7 +71,6 @@ public class RequestTest extends BaseClass {
     public void get_request_by_id(){
         log.info("getting request by id");
 
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
         int id=87;
 
         given().log().all().header("Authorization", "Bearer " + loginToken)
@@ -85,7 +84,6 @@ public class RequestTest extends BaseClass {
         log.info("Getting user of this request");
         int req_id=87;
 
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
         String responsebody=given().log().all().header("Authorization", "Bearer " + loginToken)
                 .when().get("/api/requests/getUser/"+req_id)
@@ -102,7 +100,6 @@ public class RequestTest extends BaseClass {
     //UPDATE REQUEST DETAILS
     @Test(priority = 5)
     public void update_request() throws IOException {
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
         int update_requestID=87;
 
         JsonPath update_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/Updatedata.json"))));
@@ -135,7 +132,6 @@ public class RequestTest extends BaseClass {
     //DELETE REQUEST BY ID
     @Test(priority = 6)
     public void delete_requestby_id() throws IOException {
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
         String postbody=given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
                 .body(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))))

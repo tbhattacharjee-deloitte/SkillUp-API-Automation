@@ -28,12 +28,14 @@ public class ChatTest extends BaseClass {
         System.out.println("Login Token is "+loginToken);
 
         log.info("Token Is Generated");
+        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
     }
     @Test(priority = 1)
     public void get_all_chats(){
         log.info("Getting all chats");
         //getting all chats
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
 
         given().log().all().header("Authorization", "Bearer " + loginToken)
 
@@ -47,7 +49,7 @@ public class ChatTest extends BaseClass {
         log.info("getting chats by id");
         //getting chats by chatid
         int chatid=168;
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
 
         String getresponse= given().log().all().header("Authorization", "Bearer " + loginToken)
 
@@ -66,7 +68,7 @@ public class ChatTest extends BaseClass {
     @Test(priority = 3)
     public void chat_by_chatboxID() throws IOException {
         log.info("creating chat by chatbox id");
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
 
         given().log().all().queryParam("senderName","Bhavesh").header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + loginToken)
@@ -82,7 +84,7 @@ public class ChatTest extends BaseClass {
     public void delete_chatByID(){
         //Getting ChatID
         log.info("deleting chat by id");
-        RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
 
         String ChatBody   = given().log().all().header("Authorization", "Bearer " + loginToken)
                             .with().get("/api/chats/")
