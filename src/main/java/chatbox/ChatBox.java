@@ -5,13 +5,19 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class ChatBox {
     private final String token;
@@ -52,6 +58,8 @@ public class ChatBox {
         Response response = given().spec(reqSpec).get("/api/chatbox/").then()
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
         JSONArray arr = new JSONArray(response.asString());
         System.out.println("getting all chatbox:" + arr);
     }
@@ -61,6 +69,9 @@ public class ChatBox {
         Response response = given().spec(reqSpec)
                 .put("/api/chatbox/addChat/"+createdChatboxId+"/"+chatId).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
+
         System.out.println("chat added to chatbox is " + response.asString());
     }
 
@@ -70,6 +81,8 @@ public class ChatBox {
         Response response = given().spec(reqSpec).get("/api/chatbox/get-chats/"+createdChatboxId).then()
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
         JSONArray arr = new JSONArray(response.asString());
         System.out.println("chat of given chatbox id is:" + arr);
     }
