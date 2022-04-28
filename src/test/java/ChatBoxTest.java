@@ -25,7 +25,7 @@ public class ChatBoxTest {
     public void login() {
         loginToken = Auth.login("vivek", "vivek123");
         chatBox = new ChatBox(loginToken);
-        System.out.println(loginToken);
+        System.out.println("Login token is:" + loginToken);
     }
 
     @Test(priority = 1)
@@ -38,17 +38,16 @@ public class ChatBoxTest {
         chatBox.getAllChatBox();
     }
 
-    @Test (priority = 3)
+
+    @Test(priority = 3)
+    public void addChatToChatbox() {
+        chatBox.addChatToChatbox(15);
+    }
+
+    @Test (priority = 4)
     public void getAllChatOfChatbox() {
         chatBox.getAllChatOfChatbox();
     }
-
-    @Test(priority = 4)
-    public void addChatToChatbox() {
-        chatBox.addChatToChatbox(12);
-    }
-
-
 
 
 }
