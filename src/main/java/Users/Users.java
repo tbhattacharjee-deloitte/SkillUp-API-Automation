@@ -108,16 +108,6 @@ public class Users {
 
     }
 
-//    public static void add_skill_to_user(int id, String skillName){
-//        get_user_by_ID(id);
-//        JSONObject obj = new JSONObject();
-//        obj.put("skillName", skillName);
-//        Response response = given().spec(reqSpec).body(obj.toString())
-//                .put("/api/users/addSkill/" + id).then().spec(resSpec).extract().response();
-//        assert response.statusCode() == BaseProp.OK;
-//
-//    }
-
     public static void delete_user(){
         Response response = given().spec(reqSpec)
                 .delete("/api/users/" + addeduserId).then()

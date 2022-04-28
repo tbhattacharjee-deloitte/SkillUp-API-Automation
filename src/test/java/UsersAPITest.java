@@ -15,16 +15,6 @@ import java.util.UUID;
 public class UsersAPITest extends BaseClass{
     private String loginToken;
     private Users users;
-//    public static Properties prop;
-//    static {
-//        try{
-//            prop = new Properties();
-//            FileInputStream ip=new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\java\\Users\\update_field.properties");
-//            prop.load(ip);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     @BeforeClass
     public void login() {
