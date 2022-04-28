@@ -30,7 +30,7 @@ public class TrainingDetailsTest {
                 baseUri(BaseUri).
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
-        String RequestID = "224";
+        String RequestID = "218";
         String UserID = "25";
         Response response = requestSpecification.post("/"+RequestID+"/"+UserID);
         List<Header> AllHeaders = response.getHeaders().getList("Content-Type");

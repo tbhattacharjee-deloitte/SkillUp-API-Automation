@@ -38,8 +38,10 @@ public class ReferenceTest {
                 header("Authorization", "Bearer " + LoginToken);
         Response response = requestSpecification.post("/");
         ResponseBody responseBody = response.getBody();
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
         JsonPath jsonPath = new JsonPath(responseBody.asString());
         assertThat(response.statusCode(), equalTo(BaseProp.OK));
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
     }
     @Test(priority = 1)
     public void GetAllReferences(){

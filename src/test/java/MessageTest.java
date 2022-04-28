@@ -55,10 +55,6 @@ public class MessageTest {
     }
     @Test(priority = 3)
     public void CreateMessageByRefID(){
-//        JSONObject parameter = new JSONObject();
-//        parameter.put("message", "https://nextjs.org/docs/getting-started");
-//        parameter.put("context", "Next.js documentation");
-//        parameter.put("timeStamp", "10:00:00");
         File jsonData = new File("src/test/resources/CreateMessageByRefID.json");
         requestSpecification = with().
                 baseUri(BaseUri).
