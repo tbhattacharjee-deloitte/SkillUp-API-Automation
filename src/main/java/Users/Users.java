@@ -27,7 +27,7 @@ import static io.restassured.RestAssured.given;
 public class Users {
 
     private String token;
-    private Logger logger;
+    private static Logger logger;
     private static RequestSpecification reqSpec;
     private static ResponseSpecification resSpec;
     public static int addeduserId;
@@ -45,7 +45,7 @@ public class Users {
 
     public Users(String token, Logger logger) {
         this.token = token;
-//        this.logger = logger;
+        this.logger = logger;
 
         // building reqSpec
         RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
@@ -69,7 +69,7 @@ public class Users {
         JSONObject res = new JSONObject(response.asString());
         assert (res.get("name").toString()).equals(prop.getProperty("created_user_name1"));
 
-        System.out.println("User with name "+res.get("name")+" created");
+        logger.debug("User with name "+res.get("name")+" created");
         addeduserId = Integer.parseInt(res.get("id").toString());
 
     }
@@ -81,7 +81,7 @@ public class Users {
         JSONArray jsonArray = new JSONArray(response.asString());
         assert jsonArray.length() > 0;
 
-        System.out.println("Number of users : "+ jsonArray.length());
+        logger.debug("Number of users : "+ jsonArray.length());
     }
 
     public static void get_user_by_ID(int id){
@@ -91,7 +91,7 @@ public class Users {
         JSONObject res = new JSONObject(response.asString());
         assert res.get("id").equals(id);
 
-        System.out.println("Name of user with id : "+res.get("id")+ " is "+res.get("name"));
+        logger.debug("Name of user with id : "+res.get("id")+ " is "+res.get("name"));
     }
 
     public static void update_user(int id,String field,String value){
@@ -104,7 +104,7 @@ public class Users {
         JSONObject res = new JSONObject(response.asString());
         assert ((res.get(field)).toString()).equals(obj.get(field).toString());
 
-        System.out.println(field + " of User with id " +res.get("id")+ " updated to "+res.get(field));
+        logger.debug(field + " of User with id " +res.get("id")+ " updated to "+res.get(field));
 
     }
 
@@ -112,7 +112,7 @@ public class Users {
         Response response = given().spec(reqSpec)
                 .delete("/api/users/" + addeduserId).then()
                 .extract().response();
-        System.out.println("User with ID : "+addeduserId +" deleted");
+        logger.debug("User with ID : "+addeduserId +" deleted");
         assert response.statusCode() == BaseProp.OK;
 
     }
@@ -123,7 +123,7 @@ public class Users {
         assert response.statusCode() == BaseProp.OK;
 
         JSONArray jsonArray = new JSONArray(response.asString());
-        System.out.println("Number of trainings as trainee :"+jsonArray.length());
+        logger.debug("Number of trainings as trainee :"+jsonArray.length());
     }
 
     public static void get_all_trainings_as_trainer(int id){
@@ -132,6 +132,6 @@ public class Users {
         assert response.statusCode() == BaseProp.OK;
 
         JSONArray jsonArray = new JSONArray(response.asString());
-        System.out.println("Number of trainings as trainer :"+jsonArray.length());
+        logger.debug("Number of trainings as trainer :"+jsonArray.length());
     }
 }
