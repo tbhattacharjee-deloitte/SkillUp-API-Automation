@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static io.restassured.RestAssured.with;
@@ -29,19 +30,10 @@ public class ReferenceTest {
 
     @Test
     public void CreateReference(){
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("messageId", 35);
-        jsonObject.put("message", "some_random_link");
-        jsonObject.put("context", "some_random_context");
-        jsonObject.put("dateStamp", "05-15-2022");
-
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(jsonObject);
-
-        JSONObject RequestBody = new JSONObject();
-        RequestBody.put("messages", jsonArray);
+        File jsonData = new File("src/test/resources/CreateReference.json");
         requestSpecification = with().
                 baseUri(BaseURI).
+                body(jsonData).
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
         Response response = requestSpecification.post("/");

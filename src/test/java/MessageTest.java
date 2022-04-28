@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static io.restassured.RestAssured.with;
@@ -54,20 +55,21 @@ public class MessageTest {
     }
     @Test(priority = 3)
     public void CreateMessageByRefID(){
-        JSONObject parameter = new JSONObject();
-        parameter.put("message", "https://nextjs.org/docs/getting-started");
-        parameter.put("context", "Next.js documentation");
-        parameter.put("timeStamp", "10:00:00");
+//        JSONObject parameter = new JSONObject();
+//        parameter.put("message", "https://nextjs.org/docs/getting-started");
+//        parameter.put("context", "Next.js documentation");
+//        parameter.put("timeStamp", "10:00:00");
+        File jsonData = new File("src/test/resources/CreateMessageByRefID.json");
         requestSpecification = with().
                 baseUri(BaseUri).
-                body(parameter.toString()).
+                body(jsonData).
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
         Response response = requestSpecification.put("/26");
         ResponseBody responseBody = response.getBody();
         List<Header> ContentType = response.getHeaders().getList("Content-Type");
         assertThat(response.statusCode(), equalTo(BaseProp.OK));
-        assertThat(ContentType.get(0).getValue(), equalTo("application/json"));
+        assertThat(ContentType.get(0).getValue(), equalTo("text/html"));
 
     }
     @Test(priority = 4)
