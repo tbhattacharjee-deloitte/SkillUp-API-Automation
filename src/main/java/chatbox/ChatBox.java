@@ -17,12 +17,11 @@ public class ChatBox {
     private final String token;
     private final ResponseSpecification resSpec;
     private final RequestSpecification reqSpec;
-    private int createdChatboxId;
+    int createdChatboxId;
 
 
     public ChatBox(String token) {
         this.token = token;
-
 
         // building reqSpec
         RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
@@ -37,36 +36,41 @@ public class ChatBox {
         resSpec = resBuilder.build();
     }
 
+    //creating a chat box
     public void createChatBox() {
         JSONObject obj = new JSONObject();
         Response response = given().spec(reqSpec).body(obj)
                 .post("/api/chatbox/").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
-        System.out.println(res);
+        System.out.println("Chat box created is:" + res);
         this.createdChatboxId = Integer.parseInt(res.get("chatboxId").toString());
     }
 
+    //getting all the chat box
     public void getAllChatBox() {
         Response response = given().spec(reqSpec).get("/api/chatbox/").then()
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONArray arr = new JSONArray(response.asString());
-        System.out.println(arr);
+        System.out.println("getting all chatbox:" + arr);
     }
 
-    public void getAllChatOfChatbox() {
-        Response response = given().spec(reqSpec).get("/chatbox/get-chats/3").then()
-                .spec(resSpec).extract().response();
-        assert response.statusCode() == BaseProp.OK;
-        JSONArray arr = new JSONArray(response.asString());
-        System.out.println(arr);
-    }
-
+    //adding a chat to chatbox
     public void addChatToChatbox(int chatId) {
         Response response = given().spec(reqSpec)
                 .put("/api/chatbox/addChat/"+createdChatboxId+"/"+chatId).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         System.out.println("chat added to chatbox is " + response.asString());
+    }
+
+
+    //getting all the chat of the given chatbox
+    public void getAllChatOfChatbox() {
+        Response response = given().spec(reqSpec).get("/api/chatbox/get-chats/"+createdChatboxId).then()
+                .spec(resSpec).extract().response();
+        assert response.statusCode() == BaseProp.OK;
+        JSONArray arr = new JSONArray(response.asString());
+        System.out.println("chat of given chatbox id is:" + arr);
     }
 }
