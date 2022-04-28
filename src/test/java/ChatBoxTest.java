@@ -41,7 +41,7 @@ public class ChatBoxTest {
 
     @Test(priority = 3)
     public void addChatToChatbox() {
-        chatBox.addChatToChatbox(15);
+        chatBox.addChatToChatbox(24);
     }
 
     @Test (priority = 4)
