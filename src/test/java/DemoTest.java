@@ -21,7 +21,7 @@ public class DemoTest extends BaseClass {
     }
 
     @Test
-    public void test() {
+    public void test(){
 
     }
 }
