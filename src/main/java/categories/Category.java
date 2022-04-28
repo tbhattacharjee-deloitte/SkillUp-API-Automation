@@ -5,11 +5,17 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 
 import static io.restassured.RestAssured.given;
@@ -45,8 +51,13 @@ public class Category {
         obj.put("categoryName", categoryName);
         Response response = given().spec(reqSpec).body(obj.toString())
                 .post("/api/categories/").then().spec(resSpec).extract().response();
+        JsonPath jsonPath = new JsonPath(response.asString());
+        String categoryName1 = jsonPath.get("categoryName");
+        assertThat(categoryName1,equalTo(categoryName));
         assert response.statusCode() == BaseProp.OK;
+
         JSONObject res = new JSONObject(response.asString());
+
         System.out.println("CATEGORY CREATED IS:" + res);
         this.createdCategoryId = Integer.parseInt(res.get("categoryId").toString());
     }
@@ -56,6 +67,8 @@ public class Category {
         Response response = given().spec(reqSpec).get("api/categories/").then()
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
         JSONArray arr = new JSONArray(response.asString());
         System.out.println("ALL CATEGORY IS:" + arr);
     }
@@ -65,6 +78,9 @@ public class Category {
         Response response = given().spec(reqSpec).get("api/categories/" + id).then()
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        JsonPath jsonPath = new JsonPath(response.asString());
+        int categoryId = jsonPath.getInt("categoryId");
+        assertThat(categoryId,equalTo(id));
         JSONObject res = new JSONObject(response.asString());
         System.out.println("SKILL DATA WITH ID = {" + id + "} => " + res);
     }
@@ -74,6 +90,9 @@ public class Category {
         Response response = given().spec(reqSpec).param("categoryName", name).
                 get("/api/categories/name_category").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        JsonPath jsonPath = new JsonPath(response.asString());
+        String categoryName1 = jsonPath.get("categoryName");
+        assertThat(categoryName1,equalTo(name));
         JSONObject res = new JSONObject(response.asString());
         System.out.println("CATEGORY BY NAME IS:" + res);
     }
@@ -86,6 +105,9 @@ public class Category {
         Response response = given().spec(reqSpec).body(obj.toString())
                 .put("/api/categories/update/" + id).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        JsonPath jsonPath = new JsonPath(response.asString());
+        String categoryNameUpdated = jsonPath.get("categoryName");
+        assertThat(categoryNameUpdated,equalTo(categoryName));
         System.out.println("UPDATED SKILL IS: " + response.asString());
     }
 
@@ -96,6 +118,8 @@ public class Category {
         Response response = given().spec(reqSpec).body(obj.toString())
                 .post("/api/skills/").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
+        List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
         JSONObject res = new JSONObject(response.asString());
         System.out.println("CREATED SKILL IS:" + res);
         this.createdSkillId = Integer.parseInt(res.get("skillId").toString());
@@ -116,6 +140,11 @@ public class Category {
                 .delete("/api/categories/" + id).then()
                 .extract().response();
         assert response.statusCode() == BaseProp.OK;
+        String contentType = response.header("Content-Length");
+        assertThat(contentType,equalTo("0"));
+
+        //List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
+        //assertThat(AllHeaders.get(0).getValue(), equalTo("text/html"));
         System.out.println("CATEGORY SUCCESSFULLY DELETED");
     }
 
