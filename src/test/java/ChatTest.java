@@ -31,6 +31,7 @@ public class ChatTest extends BaseClass {
     }
     @Test(priority = 1)
     public void get_all_chats(){
+        log.info("Getting all chats");
         //getting all chats
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
@@ -43,8 +44,9 @@ public class ChatTest extends BaseClass {
     }
     @Test(priority = 2)
     public void get_chat_by_id(){
+        log.info("getting chats by id");
         //getting chats by chatid
-        int chatid=1;
+        int chatid=168;
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
         String getresponse= given().log().all().header("Authorization", "Bearer " + loginToken)
@@ -63,6 +65,7 @@ public class ChatTest extends BaseClass {
     }
     @Test(priority = 3)
     public void chat_by_chatboxID() throws IOException {
+        log.info("creating chat by chatbox id");
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
         given().log().all().queryParam("senderName","Bhavesh").header("Content-Type", "application/json")
@@ -78,6 +81,7 @@ public class ChatTest extends BaseClass {
     @Test(priority = 4)
     public void delete_chatByID(){
         //Getting ChatID
+        log.info("deleting chat by id");
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
 
         String ChatBody   = given().log().all().header("Authorization", "Bearer " + loginToken)
