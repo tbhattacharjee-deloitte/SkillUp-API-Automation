@@ -68,21 +68,45 @@ public class RequestTest extends BaseClass {
 
     //GET REQUEST BY ID
     @Test(priority = 3)
-    public void get_request_by_id(){
+    public void get_request_by_id() throws IOException {
         log.info("getting request by id");
+        JsonPath create_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))));
 
-        int id=87;
+        String postresponse=given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
+                .body(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))))
+
+                .when().post("/api/requests/22/7")
+
+                .then().log().all().assertThat().statusCode(200).contentType("application/json")
+                .body("availStartTime",equalTo(create_data.getString("availStartTime"))).body("availEndTime",equalTo(create_data.getString("availEndTime")))
+                .body("description",equalTo(create_data.getString("description"))).extract().response().asString();
+
+        JsonPath id=new JsonPath(postresponse);
+        int req_id=id.getInt("requestId");
 
         given().log().all().header("Authorization", "Bearer " + loginToken)
-                .when().get("/api/requests/"+id)
-                .then().log().all().assertThat().statusCode(200).body("requestId",equalTo(id));
+                .when().get("/api/requests/"+req_id)
+                .then().log().all().assertThat().statusCode(200).body("requestId",equalTo(req_id));
 
     }
     //GET USER OF THIS REQUEST
     @Test(priority = 4)
-    public void get_userrequest(){
+    public void get_userrequest() throws IOException {
         log.info("Getting user of this request");
-        int req_id=87;
+        JsonPath create_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))));
+
+        String postresponse=given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
+                .body(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))))
+
+                .when().post("/api/requests/22/7")
+
+                .then().log().all().assertThat().statusCode(200).contentType("application/json")
+                .body("availStartTime",equalTo(create_data.getString("availStartTime"))).body("availEndTime",equalTo(create_data.getString("availEndTime")))
+                .body("description",equalTo(create_data.getString("description"))).extract().response().asString();
+
+        JsonPath id=new JsonPath(postresponse);
+        int req_id=id.getInt("requestId");
+
 
 
         String responsebody=given().log().all().header("Authorization", "Bearer " + loginToken)
@@ -90,8 +114,8 @@ public class RequestTest extends BaseClass {
 
                 .then().log().all().assertThat().statusCode(200).extract().response().asString();
 
-        JsonPath js=new JsonPath(responsebody);
-        int count_total_request= js.getInt("requests.size()");
+        JsonPath size=new JsonPath(responsebody);
+        int count_total_request= size.getInt("requests.size()");
 
         System.out.println("total requests are "+count_total_request);
 
@@ -100,7 +124,19 @@ public class RequestTest extends BaseClass {
     //UPDATE REQUEST DETAILS
     @Test(priority = 5)
     public void update_request() throws IOException {
-        int update_requestID=87;
+        JsonPath create_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))));
+
+        String postresponse=given().log().all().header("Content-Type", "application/json").header("Authorization", "Bearer " + loginToken)
+                .body(new String(Files.readAllBytes(Paths.get("src/test/resources/CreateNewRequest.json"))))
+
+                .when().post("/api/requests/22/7")
+
+                .then().log().all().assertThat().statusCode(200).contentType("application/json")
+                .body("availStartTime",equalTo(create_data.getString("availStartTime"))).body("availEndTime",equalTo(create_data.getString("availEndTime")))
+                .body("description",equalTo(create_data.getString("description"))).extract().response().asString();
+
+        JsonPath id=new JsonPath(postresponse);
+        int update_requestID=id.getInt("requestId");
 
         JsonPath update_data=new JsonPath(new String(Files.readAllBytes(Paths.get("src/test/resources/Updatedata.json"))));
 
