@@ -15,9 +15,12 @@ public class BaseClass {
     public static ExtentReports extent;
     public static Properties prop;
 
+    static {
+        extent = new ExtentReports();
+    }
+
     public BaseClass() {
         logger = LogManager.getLogger(BaseClass.class.getName());
-        extent = new ExtentReports();
         //extent.attachReporter(new ExtentHtmlReporter("extent.html"));
     }
 
