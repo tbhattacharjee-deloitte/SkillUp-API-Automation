@@ -1,12 +1,9 @@
 import Auth.Auth;
 import categories.Category;
-import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import Auth.Auth;
-import Base.BaseClass;
 
-import static Base.BaseClass.extent;
+import Base.BaseClass;
 
 public class CategoriesTest extends BaseClass{
 
@@ -16,19 +13,21 @@ public class CategoriesTest extends BaseClass{
 
     public CategoriesTest() {
         super();
-        extent.attachReporter(new ExtentHtmlReporter("CategoriesTest.html"));
     }
 
     @BeforeClass
     public void login() {
-        loginToken = Auth.login("vivek", "vivek123");
-        category = new Category(loginToken, logger);
-        logger.debug(loginToken);
+        String username = prop.getProperty("username");
+        String password = prop.getProperty("password");
+        loginToken = Auth.login(username, password);
+        category = new Category(loginToken);
+        System.out.println("Login token is: " + loginToken);
     }
 
     @Test (priority = 1)
     public void createCategory() {
-        category.createCategory("Testing");
+        String CategoryName = prop.getProperty("createCategoryName");
+        category.createCategory(CategoryName);
     }
 
     @Test (priority = 2)
@@ -38,31 +37,34 @@ public class CategoriesTest extends BaseClass{
 
     @Test (priority = 3)
     public void getCategoryById() {
-        category.getCategoryById(160);
+        category.getCategoryById(category.createdCategoryId);
     }
 
     @Test(priority = 4)
     public void getCategoryByName() {
-        category.getCategoryByName("Testing");
+        String CategoryName = prop.getProperty("getCategoryName");
+        category.getCategoryByName(CategoryName);
     }
 
     @Test(priority = 5)
     public void updateCategory() {
-        category.updateCategory(160,"BackEnd");
+        String CategoryName = prop.getProperty("updateCategoryName");
+        category.updateCategory(category.createdCategoryId,CategoryName);
     }
 
     @Test (priority = 6)
     public void createSkill() {
-        category.createSkill("CSS");
+        String CategoryName = prop.getProperty("createSkillName");
+        category.createSkill(CategoryName);
     }
 
     @Test(priority = 7)
     public void addSkillToCategory() {
-        category.addSkillToCategory(160);
+        category.addSkillToCategory(category.createdCategoryId);
     }
 
     @Test(priority = 8)
     public void DeleteCategoryById() {
-        category.DeleteCategoryById(160);
+        category.DeleteCategoryById(category.createdCategoryId);
     }
 }
