@@ -67,6 +67,7 @@ public class TrainingDetailsTest {
     public void UpdateTrainingStatus(){
         requestSpecification = with().
                 baseUri(BaseUri).
+                body("{}").
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
         Response response = requestSpecification.patch("/updateStatus/9");
