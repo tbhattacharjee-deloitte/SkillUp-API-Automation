@@ -31,38 +31,76 @@ public class ChatTest extends BaseClass {
     }
     @Test(priority = 1)
     public void get_all_chats(){
+        //getting all chats
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
         given().log().all().header("Authorization", "Bearer " + loginToken)
+
                 .when().get("/api/chats/")
+
                 .then().log().all().assertThat().statusCode(200).contentType("application/json");
 
     }
     @Test(priority = 2)
     public void get_chat_by_id(){
+        //getting chats by chatid
         int chatid=1;
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
-       String getresponse= given().log().all().header("Authorization", "Bearer " + loginToken)
+
+        String getresponse= given().log().all().header("Authorization", "Bearer " + loginToken)
+
                 .when().get("/api/chats/"+chatid)
+
                 .then().log().all().assertThat().statusCode(200).contentType("application/json")
+
                 .body("chatId",equalTo(chatid)).extract().response().asString();
+
         JsonPath responsebody=new JsonPath(getresponse);
+
         System.out.println("Chat : "+responsebody.getString("chat"));
+
         System.out.println("SenderName is: "+responsebody.getString("senderName"));
     }
     @Test(priority = 3)
     public void chat_by_chatboxID() throws IOException {
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
         given().log().all().queryParam("senderName","Bhavesh").header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + loginToken)
                 .body(new String(Files.readAllBytes(Paths.get("src/test/resources/chat.json"))))
-                .with().put("/api/chats/10")
-                .then().log().all().assertThat().statusCode(200);
+
+                .with().put("/api/chats/71")
+
+                .then().log().all().assertThat().statusCode(200).contentType("text/html");
+
+
     }
     @Test(priority = 4)
     public void delete_chatByID(){
+        //Getting ChatID
         RestAssured.baseURI="https://hu-monitorapp-backend-urtjok3rza-wl.a.run.app";
+
+        String ChatBody   = given().log().all().header("Authorization", "Bearer " + loginToken)
+                            .with().get("/api/chats/")
+                            .then().assertThat().statusCode(200).contentType("application/json")
+                .extract().response().asString();
+
+        JsonPath chatId=new JsonPath(ChatBody);
+
+        System.out.println("Newly Created ChatID are "+chatId.getString("chatId"));
+
+        String allchatid=chatId.getString("chatId");
+
+        String strArray[] = allchatid.split(" ");
+
+
+//deleting chat by chat id
+        int del_id=Integer.parseInt(strArray[1].replace(",",""));
+
         given().log().all().header("Authorization", "Bearer " + loginToken)
-                .with().put("/api/chats/3")
+
+                .with().delete("/api/chats/"+del_id)
+
                 .then().log().all().assertThat().statusCode(200);
     }
 }
