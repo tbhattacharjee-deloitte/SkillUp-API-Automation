@@ -1,4 +1,5 @@
 import Auth.Auth;
+import Base.BaseClass;
 import Base.BaseProp;
 import ListenersPackage.ListenerClass;
 import io.restassured.http.Header;
@@ -15,6 +16,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.util.List;
 
+import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -58,7 +60,7 @@ public class MessageTest {
         assertThat(AllHeaders.get(0).getValue(), equalTo("application/json"));
         assertThat(messageId, equalTo(Integer.parseInt(MessageID)));
     }
-    @Test(priority = 3)
+    @Test(priority = 2)
     public void CreateMessageByRefID(){
         File jsonData = new File("src/test/resources/CreateMessageByRefID.json");
         requestSpecification = with().
@@ -73,7 +75,7 @@ public class MessageTest {
         assertThat(ContentType.get(0).getValue(), equalTo("text/html"));
 
     }
-    @Test(priority = 4)
+    @Test(priority = 3)
     public void DeleteMessageByID(){
         requestSpecification = with().
                 baseUri(BaseUri).
@@ -82,14 +84,14 @@ public class MessageTest {
         Response response = requestSpecification.delete("/30");
         List<Header> ContentType= response.getHeaders().getList("Content-Type");
         List<Header> ContentLength = response.getHeaders().getList("Content-Length");
-        assertThat(ContentType.get(0).getValue(), equalTo("text/html"));
+        assertThat(ContentType.get(0).getValue(), equalTo("application/json"));
         assertThat(ContentLength.get(0).getValue(), equalTo(0));
         assertThat(response.statusCode(), equalTo(200));
     }
 
     // negative test cases
     // invalid Login token
-    @Test(priority = 5)
+    @Test(priority = 4)
     public void GetAllMessagesNegativeTest(){
         requestSpecification = with().
                 baseUri(BaseUri).
@@ -108,7 +110,7 @@ public class MessageTest {
     }
 
     // deleting non-existent message
-    @Test(priority = 6)
+    @Test(priority = 5)
     public void DeleteMessageByIDNegativeTest(){
         requestSpecification = with().
                 baseUri(BaseUri).
