@@ -1,7 +1,9 @@
 package Skills;
 
+import Base.BaseClass;
 import Base.BaseProp;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.google.gson.JsonObject;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -43,13 +45,16 @@ public class Skills {
     public void createSkill(String skillName) {
         JSONObject obj = new JSONObject();
         obj.put("skillName", skillName);
+        BaseClass.test.log(Status.INFO, "Creating new skill with name = " + skillName);
         Response response = given().spec(reqSpec).body(obj.toString())
                 .post("/api/skills/").then().spec(resSpec).extract().response();
+        BaseClass.test.log(Status.INFO, "Response code = " + response.statusCode());
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
         assert res.has("skillId") && res.has("skillName");
         logger.debug(res.toString());
         this.createdSkillId = Integer.parseInt(res.get("skillId").toString());
+        BaseClass.test.log(Status.INFO, "new skill id = " + this.createdSkillId);
     }
 
     public void deleteLastCreatedSkill() {
@@ -60,6 +65,7 @@ public class Skills {
     }
 
     public void getAllSkills() {
+        BaseClass.test.log(Status.INFO, "Getting all skills");
         Response response = given().spec(reqSpec).get("api/skills/").then()
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
@@ -76,6 +82,7 @@ public class Skills {
                 .spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        BaseClass.test.log(Status.INFO, "Getting skill by id\n" + res.toString());
         assert res.has("skillId") && res.has("skillName");
         logger.debug("Skill data with id = {" + id + "} => " + res);
     }
@@ -85,11 +92,13 @@ public class Skills {
                 get("/api/skills/name").then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        BaseClass.test.log(Status.INFO, "Getting skill by name\n" + res.toString());
         assert res.has("skillId") && res.has("skillName");
         logger.debug(res);
     }
 
     public void updateSkills(int id, String skillName) {
+        BaseClass.test.log(Status.INFO, "Updating skills");
         getSkillByID(id);
         JSONObject obj = new JSONObject();
         obj.put("skillName", skillName);
@@ -97,6 +106,7 @@ public class Skills {
                 .put("/api/skills/update/" + id).then().spec(resSpec).extract().response();
         assert response.statusCode() == BaseProp.OK;
         JSONObject res = new JSONObject(response.asString());
+        BaseClass.test.log(Status.INFO, "Updated skill = \n" + res.toString());
         assert res.has("skillId") && res.has("skillName");
         logger.debug("Updated skill => " + res);
     }
