@@ -27,7 +27,7 @@ public class ChatTest extends BaseClass {
 
     @BeforeClass
     public void loginUser(){
-        loginToken = Auth.login("vivek", "vivek123");
+        loginToken = Auth.authToken;
         System.out.println("Login Token is "+loginToken);
 
         log.info("Token Is Generated");

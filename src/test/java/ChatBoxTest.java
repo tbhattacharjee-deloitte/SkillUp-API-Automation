@@ -29,7 +29,7 @@ public class ChatBoxTest extends BaseClass {
     @BeforeClass
     @Parameters({"username", "password"})
     public void login(String username, String password) {
-        loginToken = Auth.login(username, password);
+        loginToken = Auth.authToken;
         chatBox = new ChatBox(loginToken,logger);
         logger.debug("Login token is:" + loginToken);
     }

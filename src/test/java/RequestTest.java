@@ -29,7 +29,7 @@ public class RequestTest extends BaseClass {
     @BeforeClass
     @Parameters({"username", "password"})
     public void loginUser(String username, String password){
-        loginToken = Auth.login(username, password);
+        loginToken = Auth.authToken;
         System.out.println("Login Token is "+loginToken);
 
         log.info("Token Is Generated");

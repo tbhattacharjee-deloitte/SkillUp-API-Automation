@@ -32,7 +32,7 @@ public class TrainingDetailsTest {
     @BeforeTest
     @Parameters({"username", "password"})
     public void login(String username, String password){
-        LoginToken = Auth.login(username, password);
+        LoginToken = Auth.authToken;
 //        System.out.println(LoginToken);
     }
 

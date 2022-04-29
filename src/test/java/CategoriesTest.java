@@ -24,7 +24,7 @@ public class CategoriesTest extends BaseClass{
     public void login(String username, String password) {
 //        String username = prop.getProperty("username");
 //        String password = prop.getProperty("password");
-        loginToken = Auth.login(username, password);
+        loginToken = Auth.authToken;
         category = new Category(loginToken,logger);
         logger.debug(loginToken);
     }

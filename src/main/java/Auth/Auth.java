@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import static io.restassured.RestAssured.given;
 
 public class Auth {
+    public static String authToken;
     public static String login(String username, String password) {
         RestAssured.useRelaxedHTTPSValidation();
         RequestSpecification reqSpec;
@@ -43,6 +44,7 @@ public class Auth {
         assert response.statusCode() == BaseProp.OK;
 
         JSONObject res = new JSONObject(response.asString());
+        authToken = res.get("token").toString();
         return res.get("token").toString();
     }
 }

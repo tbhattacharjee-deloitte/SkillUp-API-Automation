@@ -22,7 +22,7 @@ public class UsersAPITest extends BaseClass{
     @BeforeClass
     @Parameters ({"username", "password"})
     public void login(String username, String password) {
-        loginToken = Auth.login(username, password);
+        loginToken = Auth.authToken;
         users = new Users(loginToken, logger);
 //        logger.debug(loginToken);
     }
