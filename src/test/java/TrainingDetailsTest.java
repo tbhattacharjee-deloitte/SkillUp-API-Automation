@@ -54,7 +54,7 @@ public class TrainingDetailsTest {
                 baseUri(BaseUri).
                 header("Content-Type", "application/json").
                 header("Authorization", "Bearer " + LoginToken);
-        Response response = requestSpecification.get(LoginToken, BaseUri, "/4");
+        Response response = requestSpecification.get( "/4");
         List<Header> AllHeaders = response.getHeaders().getList("Content-Type");
         ResponseBody responseBody = response.getBody();
         JsonPath jsonPath = new JsonPath(response.asString());
